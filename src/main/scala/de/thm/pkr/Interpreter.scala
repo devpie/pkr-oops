@@ -119,18 +119,15 @@ object Interpreter {
           cmds foreach { inEnv(nEnv) exec _ }
         }
 
-        case Call(p, a) => {
-          eval(a) map { arg => env(p) map { 
-              case Right(adr) => None //x denotes an address Stored procedures may not be called
-              case Left(v) => // x denotes non-assignable value
-                v match {
-                  case procedure: ProcValue => procedure.appy(arg, env)
-                  case _ => println("ERROR: no procedure");
-                }
+        case Call(p, a) =>
+          eval(a) map { arg =>
+            env(p) map {
+              case Right(adr) => () //x denotes an address Stored procedures may not be called
+              case Left(procedure: ProcValue) => // x denotes non-assignable value
+                procedure.appy(arg, env)
+              case _ => println("ERROR: no procedure");
             }
           }
-
-        }
 
       } // match
     } // exec
