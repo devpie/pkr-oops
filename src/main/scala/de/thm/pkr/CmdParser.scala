@@ -1,6 +1,8 @@
 package de.thm.pkr
 
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
+import java.io.Reader
+import scala.util.parsing.input.StreamReader
 
 object CmdParser extends StandardTokenParsers {
   
@@ -56,8 +58,8 @@ object CmdParser extends StandardTokenParsers {
   				  ("CONST"~>ident)~("="~>exp<~",") ^^ { case name~e => ConstDef(name, e) } |
   				  ("PROC"~>ident)~("("~>ident<~")")~cmd<~"," ^^ { case name~fp~c => ProcDef(name, fp, c) }
   
-  def parse(s: String) : Cmd = {
-    val lexer = new lexical.Scanner(s)
+  def parse(s: Reader) : Cmd = {
+    val lexer = new lexical.Scanner(StreamReader(s))
     val result = phrase(cmd)(lexer)
     println(result)
     result match {

@@ -2,6 +2,7 @@ package de.thm.pkr
 
 import scala.collection.mutable.ArrayBuffer
 import scala.annotation.tailrec
+import java.io.Reader
 
 object Types {
   type OptVal = Option[Value]
@@ -155,7 +156,7 @@ object Interpreter {
 
   } //inEnv
 
-  def interpret(s: String) {
+  def interpret(s: Reader) {
     val ast = CmdParser.parse(s)
     inEnv { Env() } exec ast
   } //interpret
