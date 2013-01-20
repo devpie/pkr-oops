@@ -1,0 +1,27 @@
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+repositories {
+	mavenCentral()
+	maven {
+		url "http://repo.typesafe.com/typesafe/releases"
+	}
+}
+
+dependencies {
+	scalaTools 'org.scala-lang:scala-compiler:2.10.0'
+	scalaTools 'org.scala-lang:scala-library:2.10.0'
+	compile 'org.scala-lang:scala-library:2.10.0'
+	//compile 'com.typesafe.akka:akka-actor:2.0'
+}
+
+run {
+	if(project.hasProperty("args")){
+    		args project.args.split(",")
+  	}
+  	//jvmArgs '-Xmx16g'
+}
+
+mainClassName = "de.thm.pkr.Main"
+
