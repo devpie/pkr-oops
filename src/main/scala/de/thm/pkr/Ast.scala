@@ -5,13 +5,7 @@ sealed abstract class Exp
 case class IntConst(n: Int) extends Exp
 case class BoolConst(b: Boolean) extends Exp
 case class Var(x: String) extends Exp
-case class Less(l: Exp, r: Exp) extends Exp
-case class Greater(l: Exp, r: Exp) extends Exp
-case class Equal(l: Exp, r: Exp) extends Exp
-case class Plus(l: Exp, r: Exp) extends Exp
-case class Minus(l: Exp, r: Exp) extends Exp
-case class Times(l: Exp, r: Exp) extends Exp
-case class Div(l: Exp, r: Exp) extends Exp
+case class OP(l: Exp, op: String, r: Exp) extends Exp
 
 sealed abstract class Cmd
 case class Assign(left: Var, right: Exp) extends Cmd

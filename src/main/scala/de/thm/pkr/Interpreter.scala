@@ -4,14 +4,16 @@ import scala.collection.mutable.ArrayBuffer
 import scala.annotation.tailrec
 import java.io.Reader
 
-object Types {
+trait Types {
   type OptVal = Option[Value]
   type Address = Int
   type ValueOrAddress = Either[Value, Address]
+  val operators =
+    Map[String, Function2[Value, Value, OptVal]]("+" -> { _ + _ }, "-" -> { _ - _ }, "*" -> { _ * _ }, "/" -> { _ / _ }, "==" -> { _ == _ }, "<" -> { _ < _ }, ">" -> { _ > _ })
+
 }
 
-object Storage {
-  import Types._
+object Storage extends Types {
 
   // storage is a heap (open ended list of cells)
   private val heap = ArrayBuffer[Value]();
@@ -32,8 +34,7 @@ object Storage {
   }
 }
 
-object Interpreter {
-  import Types._
+object Interpreter extends Types {
 
   // Environment
   // maps names to addresses or values
@@ -63,13 +64,7 @@ object Interpreter {
             case Right(a) => Storage(a) // VAR
             case Left(v) => Some(v) // CONST
           }
-        case Greater(e1, e2) => eval2(e1, e2, { _ > _ })
-        case Less(e1, e2) => eval2(e1, e2, { _ < _ })
-        case Equal(e1, e2) => eval2(e1, e2, { _ == _ })
-        case Plus(e1, e2) => eval2(e1, e2, { _ + _ })
-        case Minus(e1, e2) => eval2(e1, e2, { _ - _ })
-        case Times(e1, e2) => eval2(e1, e2, { _ * _ })
-        case Div(e1, e2) => eval2(e1, e2, { _ / _ })
+        case OP(e1, op, e2) => eval2(e1, e2, operators(op))
       } //match
     } // eval
 
@@ -130,8 +125,8 @@ object Interpreter {
             }
           }
 
-      } // match
-    } // exec
+      }
+    }
 
     def define(ds: List[Def]): Env = {
       var nEnv: Env = env
@@ -154,12 +149,9 @@ object Interpreter {
       nEnv
     } // define
 
-  } //inEnv
+  }
 
-  def interpret(s: Reader) {
-    val ast = CmdParser.parse(s)
-    inEnv { Env() } exec ast
-  } //interpret
+  def interpret(s: Reader) { inEnv { Env() } exec CmdParser.parse(s) }
 
 }
 
