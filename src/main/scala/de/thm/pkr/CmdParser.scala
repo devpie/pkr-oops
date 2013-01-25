@@ -6,9 +6,9 @@ import scala.util.parsing.combinator.JavaTokenParsers
 
 object CmdParser extends JavaTokenParsers {
 
-  private def +- = """\+|-""".r ^^ { op => (x: Exp, y: Exp) => OP(x, op, y) }
-  private def */ = """\*|/""".r ^^ { op => (x: Exp, y: Exp) => OP(x, op, y) }
-  private def =<> = """=|<|>""".r ^^ { op => (x: Exp, y: Exp) => OP(x, op, y) }
+  private def +- = """\+|-""".r ^^ { op => OP(_:Exp, op, _:Exp) }
+  private def */ = """\*|/""".r ^^ { op => OP(_:Exp, op, _:Exp) }
+  private def =<> = """=|<|>""".r ^^ { op => OP(_:Exp, op, _:Exp) }
 
   private def factor =
     ident ^^ { Var(_) } |
